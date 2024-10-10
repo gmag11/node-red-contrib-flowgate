@@ -11,11 +11,19 @@
         "toggle",
         "flowgate",
         "StreamSwitch",
-        "node-red-node"
+        "node-red-contrib"
     ],
+    "homepage": "https://github.com/gmag11/node-red-contrib-flowgate#readme",
     "author": "Germán Martín",
+    "bugs": {
+        "url": "https://github.com/gmag11/node-red-contrib-flowgate/issues",
+        "email": "github@gmartin.net"
+    },
     "license": "MIT",
     "dependencies": {},
+    "engines": {
+        "node": ">=12.0.0"
+    },
     "node-red": {
         "version": ">=3.0.0",
         "nodes": {
