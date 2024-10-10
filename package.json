@@ -17,8 +17,10 @@
     "license": "MIT",
     "dependencies": {},
     "node-red": {
+        "version": ">=3.0.0",
         "nodes": {
-            "flowgate": "src/flowgate.js"
+            "flowgate": "src/flowgate.js",
+            "simpleflowgate": "src/simple-flowgate.js"
         }
     }
 }
