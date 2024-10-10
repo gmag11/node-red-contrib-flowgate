@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-flowgate",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A Node-RED node that allows messages to pass through based on a toggle button.",
     "main": "src/flowgate.js",
     "scripts": {
