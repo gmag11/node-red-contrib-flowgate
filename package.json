@@ -15,9 +15,9 @@
     ],
     "homepage": "https://github.com/gmag11/node-red-contrib-flowgate#readme",
     "author": "Germán Martín",
-    "bugs": {
-        "url": "https://github.com/gmag11/node-red-contrib-flowgate/issues",
-        "email": "github@gmartin.net"
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gmag11/node-red-contrib-flowgate.git"
     },
     "license": "MIT",
     "dependencies": {},
