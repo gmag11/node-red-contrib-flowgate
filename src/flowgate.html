@@ -1,7 +1,12 @@
 <script type="text/html" data-template-name="flowgate">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row" id="node-bypass">
+        <label for="node-input-bypass">Bypass</label>
+        <input type="checkbox" id="node-input-bypass" style="display:inline-block; width:15px; vertical-align:baseline;">
+        <label for="node-input-bypass">Use bypass output</label>
     </div>
 </script>
 
@@ -30,6 +35,7 @@
             color: '#e2d96e',
             defaults: {
                 name: { value: "" },
+                bypass: { value: false },
                 active: { value: true }
             },
             inputs: 1,
