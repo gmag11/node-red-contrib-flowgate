@@ -28,7 +28,7 @@ Alternatively, you can install it directly from the Node-RED palette manager by 
 
 The state of the node can be toggled during runtime without the need to redeploy the flow, making it flexible and easy to adjust.
 
-![FlowGate Node](assets/image.png)
+![FlowGate Node](https://github.com/gmag11/node-red-contrib-flowgate/raw/main/assets/image.png)
 
 ## Example Use Cases
 
