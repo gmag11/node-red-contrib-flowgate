@@ -17,7 +17,7 @@
     "author": "Germán Martín",
     "repository": {
         "type": "git",
-        "url": "https://github.com/gmag11/node-red-contrib-flowgate.git"
+        "url": "git+https://github.com/gmag11/node-red-contrib-flowgate.git"
     },
     "license": "MIT",
     "dependencies": {},
