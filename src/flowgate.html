@@ -3,10 +3,13 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
-    <div class="form-row" id="node-bypass">
-        <label for="node-input-bypass">Bypass</label>
-        <input type="checkbox" id="node-input-bypass" style="display:inline-block; width:15px; vertical-align:baseline;">
-        <label for="node-input-bypass">Use bypass output</label>
+    <div class="form-row" id="node-input-bypass-enable">
+        <label>Bypass</label>
+        <input type="checkbox" id="node-input-bypass" style="margin-left:0px; vertical-align:top; width:auto !important;">
+        <label for="node-input-bypass" style="width:auto">Use bypass output</label>
+    </div>
+    <div class="form-row">
+        <input type="hidden" id="node-input-outputs" />
     </div>
 </script>
 
@@ -36,35 +39,46 @@
             defaults: {
                 name: { value: "" },
                 bypass: { value: false },
+                outputs: { value: 1 },
                 active: { value: true }
             },
             inputs: 1,
-            outputs: 1,
-            icon:  "font-awesome/fa-power-off",
+            icon: "font-awesome/fa-power-off",
             label: function () {
                 return this.name || "flowgate";
             },
-            // oneditprepare: function () {
-            //     // Configuración inicial de la interfaz
-            //     if (this.active) {
-            //         $(".red-ui-flow-node-button-toggle").addClass("active");
-            //     } else {
-            //         $(".red-ui-flow-node-button-toggle").removeClass("active");
-            //     }
-            // },
+            outputs: 1,
+            oneditprepare: function () {
+                var node = this;
+                if (this.bypass === "true" || this.bypass === true) {
+                    $("#node-input-bypass").prop("checked", true);
+                } else {
+                    $("#node-input-bypass").prop("checked", false);
+                }
+                $("#node-input-bypass").on("change", function () {
+                   node.bypass = $(this).is(":checked");
+                   node.outputs = node.bypass ? 2 : 1;
+                });
+                // Ajustar el número de salidas al cargar la interfaz de edición
+                //node.outputs = node.bypass ? 2 : 1;
+            },
             oneditsave: function () {
                 // Guardar el estado del botón
-                $("#node-input-statusVal").val($("#node-input-typed-status").typedInput('value'));
-                //this.active = $(".red-ui-flow-node-button-toggle").hasClass("active");
+                var node = this;
+                node.bypass = $("#node-input-bypass").is(":checked");
+                node.outputs = node.bypass ? 2 : 1;
+                node.redraw();
+                //this.changed = true;
+                //this.dirty = true;
+                //RED.nodes.dirty(true);
             },
             button: {
                 toggle: "active",
                 onclick: function () {
                     var label = RED.utils.sanitize(this.name || "flowgate");
                     var node = this;
-                    //var newActiveState = node.active;
                     activateAjaxCall(node, node.active, function (resp, textStatus, xhr) {
-                         var historyEvent = {
+                        var historyEvent = {
                             t: 'edit',
                             node: node,
                             changes: {
@@ -115,6 +129,20 @@
                 };
             }
         });
+
+        // Código que se ejecuta justo después de registrar el nodo
+        // $(document).ready(function () {
+        //     console.log("Flowgate node type registered successfully.");
+        //     // Adaptar el número de salidas según el valor del bypass
+        //     $(".red-ui-palette-node[data-palette-type='flowgate']").each(function () {
+        //         var node = RED.nodes.node($(this).data('node-id'));
+        //         if (node && node.bypass) {
+        //             node.outputs = 2;
+        //         } else {
+        //             node.outputs = 1;
+        //         }
+        //     });
+        // });
     })();
 </script>
 
