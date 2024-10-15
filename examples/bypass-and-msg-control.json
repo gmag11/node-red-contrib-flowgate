@@ -1,0 +1,130 @@
+[
+    {
+        "id": "4f397f3a1bdaef61",
+        "type": "inject",
+        "z": "84c82b718b328987",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 440,
+        "y": 160,
+        "wires": [
+            [
+                "7cadca75dab0b34a"
+            ]
+        ]
+    },
+    {
+        "id": "ee24781f808d8f1c",
+        "type": "debug",
+        "z": "84c82b718b328987",
+        "name": "active",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "7cadca75dab0b34a",
+        "type": "flowgate",
+        "z": "84c82b718b328987",
+        "name": "",
+        "bypass": true,
+        "outputs": 2,
+        "active": true,
+        "x": 760,
+        "y": 160,
+        "wires": [
+            [
+                "ee24781f808d8f1c"
+            ],
+            [
+                "d314b4cd57832484"
+            ]
+        ]
+    },
+    {
+        "id": "d314b4cd57832484",
+        "type": "debug",
+        "z": "84c82b718b328987",
+        "name": "bypass",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c0c62f01b5aa5c1b",
+        "type": "inject",
+        "z": "84c82b718b328987",
+        "name": "ON",
+        "props": [
+            {
+                "p": "flowgate",
+                "v": "true",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 430,
+        "y": 260,
+        "wires": [
+            [
+                "7cadca75dab0b34a"
+            ]
+        ]
+    },
+    {
+        "id": "d2e7833844712121",
+        "type": "inject",
+        "z": "84c82b718b328987",
+        "name": "OFF",
+        "props": [
+            {
+                "p": "flowgate",
+                "v": "false",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 430,
+        "y": 300,
+        "wires": [
+            [
+                "7cadca75dab0b34a"
+            ]
+        ]
+    }
+]

@@ -6,8 +6,9 @@ module.exports = function (RED) {
         var node = this;
 
         // Estado del nodo, si está activo o no
-        this.active = (config.active === null || typeof config.active === "undefined") || config.active;
-        this.name = config.name;
+        node.active = (config.active === null || typeof config.active === "undefined") || config.active;
+        node.bypass = (config.bypass === null || typeof config.bypass === "undefined") || config.bypass;
+        //node.name = config.name;
 
         // Lógica del botón en la interfaz
         RED.httpAdmin.post("/flowgate/:id/:state", RED.auth.needsPermission("flowgate.write"), function (req, res) {
@@ -32,7 +33,7 @@ module.exports = function (RED) {
                 targetNode.status({ fill: "green", shape: "dot", text: "active" });
             } else {
                 targetNode.active = false;
-                targetNode.status({ fill: "red", shape: "ring", text: "inactive" });
+                targetNode.status({ fill: "grey", shape: "ring", text: "bypass" });
             }
         }
 
@@ -40,8 +41,33 @@ module.exports = function (RED) {
 
         // Evento de entrada de mensaje
         this.on("input", function (msg, send, done) {
+            var node = this;
+
+            // Controlar el estado activo basado en msg.flowgate
+            if (msg.flowgate !== undefined) {
+                var activeStates = [true, 1, "1", "ON", "On", "on", "yes"];
+                var inactiveStates = [false, 0, "0", "OFF", "Off", "off", "no"];
+
+                if (activeStates.includes(msg.flowgate)) {
+                    node.active = true;
+                    setNodeState(node, true);
+                } else if (inactiveStates.includes(msg.flowgate)) {
+                    node.active = false;
+                    setNodeState(node, false);
+                }
+                delete msg.flowgate;
+            }
+
+            if (Object.keys(msg).length === 1 && msg._msgid !== undefined) {
+                done(); // Finaliza el procesamiento sin enviar el mensaje
+                return; // Salir de la función
+            }
+
+            // Enviar mensaje si el nodo está activo o si bypass está habilitado
             if (node.active) {
                 send(msg); // Enviar mensaje si el nodo está activo
+            } else if (node.bypass) {
+                send([null, msg]); // Enviar mensaje a la bypass salida
             }
             done(); // Finalizar el procesamiento
         });
@@ -54,11 +80,11 @@ module.exports = function (RED) {
 
     // Registrar el nodo en Node-RED
     RED.nodes.registerType("flowgate", FlowGate, {
-        settings: {
-            flowgateUseColors: {
-                value: true,
-            }
-        },
+        // settings: {
+        //     flowgateUseColors: {
+        //         value: true,
+        //     },
+        // },
         button: {
             toggle: "active",
             visible: function () { return true; },
