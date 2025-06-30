@@ -56,12 +56,14 @@ module.exports = function (RED) {
                     setNodeState(node, false);
                 }
                 delete msg.flowgate;
+                done();
+                return;
             }
 
-            if (Object.keys(msg).length === 1 && msg._msgid !== undefined) {
-                done(); // Finaliza el procesamiento sin enviar el mensaje
-                return; // Salir de la función
-            }
+            // if (Object.keys(msg).length === 1 && msg._msgid !== undefined) {
+            //     done(); // Finaliza el procesamiento sin enviar el mensaje
+            //     return; // Salir de la función
+            // }
 
             // Enviar mensaje si el nodo está activo o si bypass está habilitado
             if (node.active) {
