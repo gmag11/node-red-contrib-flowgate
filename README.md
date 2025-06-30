@@ -9,6 +9,7 @@ FlowGate is a custom node for [Node-RED](https://nodered.org/) that allows you t
 - **Intuitive UI Integration**: Visual representation of the node's state (active or inactive) directly within the Node-RED editor.
 - **Bypass Output**: Enable a second output that allows messages to pass through even when the node is inactive.
 - **Dynamic Activation**: Control the active state of the node using `msg.flowgate`. States may include values such as true, 1, "1", "ON", etc. to activate the node or their opposites to deactivate it.
+  **Note:** Messages containing `msg.flowgate` will be processed without any output message.
 
 ## Installation
 

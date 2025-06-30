@@ -98,6 +98,7 @@ This custom Node-RED node controls message flow in automation workflows during d
 The full input message to be controlled by the FlowGate node.
 
 : flowgate ( boolean | string | number ) : The FlowGate node can be activated or deactivated by setting the value of this property to true or false. Alternatively, it can be activated or deactivated by setting it to 1 or 0, "ON" or "OFF". This property is removed before the message is passed to the active output.
+  **Note:** Messages containing `msg.flowgate` will be processed without producing any output message.
 
 ### Outputs
 
