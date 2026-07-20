@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     "use strict";
 
-    // Función para cambiar el estado del nodo (compartida por ruta e instancias)
+    // Shared node state setter (used by route and instances)
     function setNodeState(targetNode, state) {
         if (state) {
             targetNode.active = true;
@@ -12,7 +12,7 @@ module.exports = function (RED) {
         }
     }
 
-    // Registrar la ruta HTTP una sola vez, fuera del constructor
+    // Register HTTP route once, outside the constructor
     RED.httpAdmin.post("/flowgate/:id/:state", RED.auth.needsPermission("flowgate.write"), function (req, res) {
         var state = req.params.state;
         if (state !== 'enable' && state !== 'disable') {
@@ -20,7 +20,7 @@ module.exports = function (RED) {
             return;
         }
         var targetNode = RED.nodes.getNode(req.params.id);
-        // Verificar que el nodo objetivo sea realmente un flowgate
+        // Verify target node is actually a flowgate
         if (targetNode !== null && typeof targetNode !== "undefined" && targetNode.type === "flowgate") {
             setNodeState(targetNode, state === "enable");
             res.sendStatus(state === "enable" ? 200 : 201);
@@ -33,23 +33,23 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        // Estado del nodo, si está activo o no
+        // Node state (active or not)
         node.active = (config.active === null || typeof config.active === "undefined") || config.active;
         node.bypass = (config.bypass === null || typeof config.bypass === "undefined") || config.bypass;
         //node.name = config.name;
 
-        // Asegurar consistencia entre bypass y outputs (import puede desincronizar)
+        // Ensure bypass/outputs consistency (import can desync)
         if (node.bypass && config.outputs !== 2) {
-            node.warn("FlowGate: bypass habilitado pero outputs=" + config.outputs + ". Forzando outputs=2.");
+            node.warn("FlowGate: bypass enabled but outputs=" + config.outputs + ". Forcing outputs=2.");
         }
 
         setNodeState(this, this.active);
 
-        // Evento de entrada de mensaje
+        // Message input event
         this.on("input", function (msg, send, done) {
             var node = this;
 
-            // Controlar el estado activo basado en msg.flowgate
+            // Control active state based on msg.flowgate
             if (msg.flowgate !== undefined) {
                 var activeStates = [true, 1, "1", "ON", "On", "on", "yes"];
                 var inactiveStates = [false, 0, "0", "OFF", "Off", "off", "no"];
@@ -79,31 +79,31 @@ module.exports = function (RED) {
             }
 
             // if (Object.keys(msg).length === 1 && msg._msgid !== undefined) {
-            //     done(); // Finaliza el procesamiento sin enviar el mensaje
-            //     return; // Salir de la función
+            //     done(); // End processing without sending the message
+            //     return; // Exit the function
             // }
 
-            // Enviar mensaje si el nodo está activo o si bypass está habilitado
+            // Forward message if node is active or bypass is enabled
             if (node.active) {
-                send(msg); // Enviar mensaje si el nodo está activo
+                send(msg); // Send message when node is active
             } else if (node.bypass) {
-                // Guard: si outputs no es 2 (import desincronizado), enviar a salida 1
+                // Guard: if outputs !== 2 (import desync), fall back to output 1
                 if (node.outputs === 2 || (config.outputs === 2)) {
-                    send([null, msg]); // Enviar mensaje a la bypass salida
+                    send([null, msg]); // Send message to bypass output
                 } else {
                     send(msg);
                 }
             }
-            done(); // Finalizar el procesamiento
+            done(); // End processing
         });
 
-        // Evento para limpiar el estado cuando se cierra el nodo
+        // Clear node status on close
         this.on("close", function () {
             node.status({});
         });
     }
 
-    // Registrar el nodo en Node-RED
-    // El botón se gestiona en el editor (flowgate.html), no en runtime
+    // Register the node in Node-RED
+    // Button is managed in the editor (flowgate.html), not in runtime
     RED.nodes.registerType("flowgate", FlowGate);
 };
