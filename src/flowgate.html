@@ -59,7 +59,10 @@
                 onclick: function () {
                     var label = RED.utils.sanitize(this.name || "flowgate");
                     var node = this;
-                    activateAjaxCall(node, node.active, function (resp, textStatus, xhr) {
+                    // Enviar estado DESEADO (nuevo), no estado actual
+                    activateAjaxCall(node, !node.active, function (resp, textStatus, xhr) {
+                        // El servidor ya cambió el estado; sincronizar el cliente
+                        node.active = !node.active;
                         var historyEvent = {
                             t: 'edit',
                             node: node,
