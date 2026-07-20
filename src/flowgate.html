@@ -59,10 +59,10 @@
                 onclick: function () {
                     var label = RED.utils.sanitize(this.name || "flowgate");
                     var node = this;
-                    // Enviar estado DESEADO (nuevo), no estado actual
-                    activateAjaxCall(node, !node.active, function (resp, textStatus, xhr) {
-                        // El servidor ya cambió el estado; sincronizar el cliente
-                        node.active = !node.active;
+                    // toggle: "active" already flipped node.active; send current (new) state to server
+                    activateAjaxCall(node, node.active, function (resp, textStatus, xhr) {
+                        // node.active already reflects desired state (flipped by toggle);
+                        // changes.active stores the OLD value for undo
                         var historyEvent = {
                             t: 'edit',
                             node: node,

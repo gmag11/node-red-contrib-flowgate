@@ -72,7 +72,10 @@ module.exports = function (RED) {
                     done();
                     return;
                 }
-                // Valor no reconocido: no tragar el mensaje, dejar pasar
+                // Unrecognized value: warn and discard the message
+                node.warn("FlowGate: unrecognized msg.flowgate — use true/false, 1/0, ON/OFF, or toggle");
+                done();
+                return;
             }
 
             // if (Object.keys(msg).length === 1 && msg._msgid !== undefined) {
