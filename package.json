@@ -29,6 +29,11 @@
         "version": ">=3.0.0",
         "nodes": {
             "flowgate": "src/flowgate.js"
+        },
+        "permissions": {
+            "flowgate.write": {
+                "description": "Allows the user to toggle FlowGate nodes via the admin API"
+            }
         }
     }
 }

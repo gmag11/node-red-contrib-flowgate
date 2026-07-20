@@ -38,6 +38,11 @@ module.exports = function (RED) {
         node.bypass = (config.bypass === null || typeof config.bypass === "undefined") || config.bypass;
         //node.name = config.name;
 
+        // Asegurar consistencia entre bypass y outputs (import puede desincronizar)
+        if (node.bypass && config.outputs !== 2) {
+            node.warn("FlowGate: bypass habilitado pero outputs=" + config.outputs + ". Forzando outputs=2.");
+        }
+
         setNodeState(this, this.active);
 
         // Evento de entrada de mensaje
@@ -48,6 +53,7 @@ module.exports = function (RED) {
             if (msg.flowgate !== undefined) {
                 var activeStates = [true, 1, "1", "ON", "On", "on", "yes"];
                 var inactiveStates = [false, 0, "0", "OFF", "Off", "off", "no"];
+                var recognized = true;
 
                 if (typeof msg.flowgate === "string" && msg.flowgate.toLowerCase() === "toggle") {
                     node.active = !node.active;
@@ -58,10 +64,15 @@ module.exports = function (RED) {
                 } else if (inactiveStates.includes(msg.flowgate)) {
                     node.active = false;
                     setNodeState(node, false);
+                } else {
+                    recognized = false;
                 }
                 delete msg.flowgate;
-                done();
-                return;
+                if (recognized) {
+                    done();
+                    return;
+                }
+                // Valor no reconocido: no tragar el mensaje, dejar pasar
             }
 
             // if (Object.keys(msg).length === 1 && msg._msgid !== undefined) {
@@ -73,7 +84,12 @@ module.exports = function (RED) {
             if (node.active) {
                 send(msg); // Enviar mensaje si el nodo está activo
             } else if (node.bypass) {
-                send([null, msg]); // Enviar mensaje a la bypass salida
+                // Guard: si outputs no es 2 (import desincronizado), enviar a salida 1
+                if (node.outputs === 2 || (config.outputs === 2)) {
+                    send([null, msg]); // Enviar mensaje a la bypass salida
+                } else {
+                    send(msg);
+                }
             }
             done(); // Finalizar el procesamiento
         });
