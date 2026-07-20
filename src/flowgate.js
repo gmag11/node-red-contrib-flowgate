@@ -48,7 +48,10 @@ module.exports = function (RED) {
                 var activeStates = [true, 1, "1", "ON", "On", "on", "yes"];
                 var inactiveStates = [false, 0, "0", "OFF", "Off", "off", "no"];
 
-                if (activeStates.includes(msg.flowgate)) {
+                if (typeof msg.flowgate === "string" && msg.flowgate.toLowerCase() === "toggle") {
+                    node.active = !node.active;
+                    setNodeState(node, node.active);
+                } else if (activeStates.includes(msg.flowgate)) {
                     node.active = true;
                     setNodeState(node, true);
                 } else if (inactiveStates.includes(msg.flowgate)) {
